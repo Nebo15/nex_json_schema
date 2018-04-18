@@ -119,14 +119,14 @@ defmodule NExJsonSchema.Validator.Format do
 
   defp validate_date_existence("date-time", data, failure_message_fun) do
     case DateTime.from_iso8601(data) do
-      {:ok, datetime, _} -> []
+      {:ok, _, _} -> []
       {:error, _} -> [{failure_message_fun.(data), []}]
     end
   end
 
   defp validate_date_existence("date", data, failure_message_fun) do
     case Date.from_iso8601(data) do
-      {:ok, datetime, _} -> []
+      {:ok, _} -> []
       {:error, _} -> [{failure_message_fun.(data), []}]
     end
   end

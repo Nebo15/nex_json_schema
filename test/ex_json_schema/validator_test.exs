@@ -349,6 +349,10 @@ defmodule NExJsonSchema.ValidatorTest do
     ])
   end
 
+  test "validation success for date-time existence" do
+    assert :ok == validate(%{"format" => "date-time"}, "1944-02-29T12:12:12Z")
+  end
+
   test "validation errors for date existence" do
     assert_validation_errors(%{"format" => "date"}, "1942-02-29", [
       {%{
@@ -357,6 +361,10 @@ defmodule NExJsonSchema.ValidatorTest do
          rule: :date
        }, "$"}
     ])
+  end
+
+  test "validation success for date existence" do
+    assert :ok == validate(%{"format" => "date"}, "1944-02-29")
   end
 
   test "validation errors for email format" do
