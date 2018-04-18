@@ -5,3 +5,7 @@ erl_crash.dump
 *.ez
 doc/
 .idea
+.DS_Store
+.elixir_ls/
+.formatter.exs
+test/.DS_Store
