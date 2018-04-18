@@ -53,7 +53,7 @@ defmodule NExJsonSchema.Validator.Format do
 
     case validate_with_regex_result do
       [] ->
-        validate_date_existence("date-time", data, fn data ->
+        validate_date_existence("date", data, fn data ->
           %{
             description: "expected #{inspect(data)} to be an existing date",
             rule: :date,
