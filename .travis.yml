@@ -1,12 +1,12 @@
 language: elixir
 elixir:
-  - 1.4.1
-  - 1.5.0
-  - 1.6.0
+  - 1.7.0
+  - 1.8.0
+  - 1.9.0
 otp_release:
-  - 19.2
-  - 20.0
   - 20.1
+  - 21.0
+  - 22.0
 matrix:
   exclude:
     - elixir: 1.4.1
