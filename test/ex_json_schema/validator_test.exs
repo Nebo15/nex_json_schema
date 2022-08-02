@@ -446,6 +446,17 @@ defmodule NExJsonSchema.ValidatorTest do
     ])
   end
 
+  test "validation errors for multiples of 0.1" do
+    assert_validation_errors(%{"multipleOf" => 0.1}, 18.65, [
+      {%{
+         raw_description: "expected value to be a multiple of %{multiple_of} but got %{actual}",
+         description: "expected value to be a multiple of 0.1 but got 18.65",
+         params: %{multiple_of: 0.1, actual: 18.65},
+         rule: :number
+       }, "$"}
+    ])
+  end
+
   test "validation errors for minimum length" do
     assert_validation_errors(%{"minLength" => 4}, "foo", [
       {%{
