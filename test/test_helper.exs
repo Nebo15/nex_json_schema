@@ -1,5 +1,6 @@
-ExUnit.start()
 HTTPoison.start()
+
+:inets.start()
 
 {:ok, _} =
   :inets.start(
@@ -11,3 +12,5 @@ HTTPoison.start()
   )
 
 {:ok, _} = :inets.start(:httpd, server_name: 'test 2', document_root: './test/schemata', server_root: '.', port: 8000)
+
+ExUnit.start()

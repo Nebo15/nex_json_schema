@@ -296,21 +296,15 @@ defmodule NExJsonSchema.Validator do
   end
 
   defp validate_aspect(_, _, {"multipleOf", multiple_of}, data) when is_number(data) do
-    factor = data / multiple_of
+    zero = Decimal.new(0)
+    dec_multiple_of = dec(multiple_of)
+    dec_data = dec(data)
 
-    case Float.floor(factor) == factor do
-      true ->
-        []
-
-      false ->
-        [
-          {format_error(
-             :number,
-             "expected value to be a multiple of %{multiple_of} but got %{actual}",
-             multiple_of: multiple_of,
-             actual: data
-           ), []}
-        ]
+    cond do
+      dec_multiple_of == zero -> [multiple_of_error(multiple_of, data)]
+      dec_data == zero -> []
+      Decimal.integer?(Decimal.div(dec_data, dec_multiple_of)) -> []
+      true -> [multiple_of_error(multiple_of, data)]
     end
   end
 
@@ -369,6 +363,23 @@ defmodule NExJsonSchema.Validator do
   end
 
   defp validate_aspect(_, _, _, _), do: []
+
+  defp dec(number) do
+    if is_float(number) do
+      Decimal.from_float(number)
+    else
+      Decimal.new(number)
+    end
+  end
+
+  defp multiple_of_error(multiple_of, data) do
+    {format_error(
+       :number,
+       "expected value to be a multiple of %{multiple_of} but got %{actual}",
+       multiple_of: multiple_of,
+       actual: data
+     ), []}
+  end
 
   defp format_description(raw_description, params) do
     Enum.reduce(params, raw_description, fn {key, value}, acc ->
