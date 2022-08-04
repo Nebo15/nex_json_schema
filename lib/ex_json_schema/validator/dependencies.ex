@@ -1,4 +1,6 @@
 defmodule NExJsonSchema.Validator.Dependencies do
+  @moduledoc false
+
   alias NExJsonSchema.Schema
   alias NExJsonSchema.Validator
 

@@ -1,18 +1,20 @@
 defmodule NExJsonSchema.Validator do
+  @moduledoc false
+
+  alias NExJsonSchema.Schema
+  alias NExJsonSchema.Schema.Root
   alias NExJsonSchema.Validator.Dependencies
   alias NExJsonSchema.Validator.Format
   alias NExJsonSchema.Validator.Items
   alias NExJsonSchema.Validator.Properties
   alias NExJsonSchema.Validator.Type
-  alias NExJsonSchema.Schema
-  alias NExJsonSchema.Schema.Root
 
   @type errors :: [{String.t(), String.t()}] | []
   @type errors_with_list_paths :: [{String.t(), [String.t() | integer]}] | []
 
   @spec validate(Root.t(), NExJsonSchema.data()) :: :ok | {:error, errors}
   def validate(root = %Root{}, data) do
-    errors = validate(root, root.schema, data, ["$"]) |> errors_with_string_paths
+    errors = root |> validate(root.schema, data, ["$"]) |> errors_with_string_paths
 
     case Enum.empty?(errors) do
       true -> :ok
@@ -39,7 +41,7 @@ defmodule NExJsonSchema.Validator do
   def valid?(schema = %{}, data), do: valid?(Schema.resolve(schema), data)
 
   @spec valid?(Root.t(), Schema.resolved(), NExJsonSchema.data()) :: boolean
-  def valid?(root, schema, data), do: validate(root, schema, data) |> Enum.empty?()
+  def valid?(root, schema, data), do: root |> validate(schema, data) |> Enum.empty?()
 
   defp errors_with_string_paths(errors) do
     Enum.map(errors, fn {msg, path} -> {msg, Enum.join(path, ".")} end)

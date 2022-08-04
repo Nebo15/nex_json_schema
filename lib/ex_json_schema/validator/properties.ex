@@ -1,4 +1,6 @@
 defmodule NExJsonSchema.Validator.Properties do
+  @moduledoc false
+
   alias NExJsonSchema.Schema
   alias NExJsonSchema.Validator
 
@@ -37,7 +39,8 @@ defmodule NExJsonSchema.Validator.Properties do
   end
 
   defp validate_pattern_property(root, {pattern, schema}, properties) do
-    properties_matching(properties, pattern)
+    properties
+    |> properties_matching(pattern)
     |> Enum.map(fn {name, property} ->
       {name, Validator.validate(root, schema, property, [name])}
     end)

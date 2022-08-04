@@ -1,4 +1,9 @@
 defmodule NExJsonSchema.Schema do
+  @moduledoc false
+
+  alias NExJsonSchema.Schema.Draft4
+  alias NExJsonSchema.Schema.Root
+
   defmodule UnsupportedSchemaVersionError do
     defexception message: "unsupported schema version, only draft 4 is supported"
   end
@@ -10,9 +15,6 @@ defmodule NExJsonSchema.Schema do
   defmodule UndefinedRemoteSchemaResolverError do
     defexception message: "trying to resolve a remote schema but no remote schema resolver function is defined"
   end
-
-  alias NExJsonSchema.Schema.Draft4
-  alias NExJsonSchema.Schema.Root
 
   @type resolved :: %{String.t() => NExJsonSchema.json_value() | (Root.t() -> {Root.t(), resolved})}
 
@@ -26,11 +28,11 @@ defmodule NExJsonSchema.Schema do
   def resolve(schema = %{}), do: resolve_root(%Root{schema: schema})
 
   @spec get_ref_schema(Root.t(), [:root | String.t()]) :: NExJsonSchema.json()
-  def get_ref_schema(root = %Root{}, [:root | path] = ref) do
+  def get_ref_schema(root = %Root{}, ref = [:root | path]) do
     get_ref_schema_with_schema(root.schema, path, ref)
   end
 
-  def get_ref_schema(root = %Root{}, [url | path] = ref) when is_binary(url) do
+  def get_ref_schema(root = %Root{}, ref = [url | path]) when is_binary(url) do
     get_ref_schema_with_schema(root.refs[url], path, ref)
   end
 
@@ -110,7 +112,7 @@ defmodule NExJsonSchema.Schema do
       case ref do
         "http://" <> _ -> ref
         "https://" <> _ -> ref
-        _else -> (scope <> ref) |> String.replace("##", "#")
+        _else -> String.replace(scope <> ref, "##", "#")
       end
 
     {root, path} = resolve_ref(root, scoped_ref)
@@ -247,14 +249,12 @@ defmodule NExJsonSchema.Schema do
   end
 
   defp get_ref_schema_with_schema(schema, [idx | path], ref) when is_integer(idx) do
-    try do
-      get_ref_schema_with_schema(:lists.nth(idx + 1, schema), path, ref)
-    catch
-      :error, :function_clause ->
-        raise InvalidSchemaError, message: "reference #{ref_to_string(ref)} could not be resolved"
-    end
+    get_ref_schema_with_schema(:lists.nth(idx + 1, schema), path, ref)
+  catch
+    :error, :function_clause ->
+      raise InvalidSchemaError, message: "reference #{ref_to_string(ref)} could not be resolved"
   end
 
-  defp ref_to_string([:root | path]), do: ["$" | path] |> Enum.join(".")
-  defp ref_to_string([url | path]), do: [url <> "#" | path] |> Enum.join("/")
+  defp ref_to_string([:root | path]), do: Enum.join(["$" | path], ".")
+  defp ref_to_string([url | path]), do: Enum.join([url <> "#" | path], "/")
 end

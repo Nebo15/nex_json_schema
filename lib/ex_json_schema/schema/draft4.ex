@@ -1,4 +1,6 @@
 defmodule NExJsonSchema.Schema.Draft4 do
+  @moduledoc false
+
   @schema %{
     "$schema" => "http://json-schema.org/draft-04/schema#",
     "default" => %{},

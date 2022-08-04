@@ -25,7 +25,8 @@ defmodule NExJsonSchema.JsonSchemaTestSuiteTest do
   import NExJsonSchema.JsonSchemaTestSuiteTest.Helpers
   import NExJsonSchema.Validator, only: [valid?: 2]
 
-  @tests Path.wildcard("#{schema_tests_path()}**/*.json")
+  @tests "#{schema_tests_path()}**/*.json"
+         |> Path.wildcard()
          |> Enum.map(fn path ->
            path |> String.replace(schema_tests_path(), "") |> String.replace(".json", "")
          end)

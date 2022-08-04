@@ -1,4 +1,6 @@
 defmodule NExJsonSchema.Validator.Type do
+  @moduledoc false
+
   alias NExJsonSchema.Validator
 
   @spec validate(String.t(), NExJsonSchema.data()) :: Validator.errors_with_list_paths()
